@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Project;
 use App\Models\Type;
+use App\Models\Technology;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +30,8 @@ class ProjectController extends Controller
     {
         $project = new Project();
         $types = Type::orderBy('label')->get();
-        return view('admin.projects.create', compact('project'), compact('types'));
+        $technologies = Technology::All();
+        return view('admin.projects.create', compact('project', 'types', 'technologies'));
     }
 
     /**
@@ -41,6 +44,7 @@ class ProjectController extends Controller
             'type_id' => 'nullable|exists:types,id',
             'content' => 'required|string',
             'image' => 'required|image|mimes:jpg,jpeg,png',
+            'technologies' => 'nullable|exists:technologies,id'
         ], [
             'title.required' => 'Title is required',
             'type_id' => 'Choose the project type',
@@ -50,6 +54,7 @@ class ProjectController extends Controller
             'content.required' => 'Content can\'t be empty',
             'image.image' => 'Files need to be an image',
             'image.mimes' => 'Accepted extensions are: jpg, jpeg, png',
+            'technologies' => 'Selected a not valid value'
         ]);
 
         $data = $request->all();
@@ -63,6 +68,9 @@ class ProjectController extends Controller
         if ($request->hasFile('image')) $project->image = Storage::put('upload', $data['image']);
         
         $project->save();
+
+        // make a relation between project and technology
+        if(Arr::exists($data, 'technologies')) $project->technologies()->attach($data['technologies']);
 
         return to_route('admin.projects.show', $project->id);
     }
@@ -81,7 +89,10 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::orderBy('label')->get();
-        return view('admin.projects.edit', compact('project'), compact('types'));
+        $technologies = Technology::All();
+
+        $project_technologies = $project->technologies->pluck('id')->toArray();
+        return view('admin.projects.edit', compact('project', 'types', 'technologies', 'project_technologies'));
     }
 
     /**
@@ -94,6 +105,7 @@ class ProjectController extends Controller
             'type_id' => 'nullable|exists:types,id',
             'content' => 'required|string',
             'image' => 'required|image|mimes:jpg,jpeg,png',
+            'technologies' => 'nullable|exists:technologies,id'
         ], [
             'title.required' => 'Title is required',
             'type_id' => 'Choose the project type',
@@ -103,6 +115,7 @@ class ProjectController extends Controller
             'content.required' => 'Content can\'t be empty',
             'image.image' => 'Files need to be an image',
             'image.mimes' => 'Accepted extensions are: jpg, jpeg, png',
+            'technologies' => 'Selected a not valid value'
         ]);
         
         $data = $request->all();
@@ -116,6 +129,10 @@ class ProjectController extends Controller
         } 
         
         $project->save();
+
+        // Assign the technologies
+        if(Arr::exists($data, 'technologies')) $project->technologies()->sync($data['technologies']);
+        else if(count($project->technologies)) $project->technologies()->detach();
 
         return to_route('admin.projects.show', $project->id);
     }
