@@ -56,8 +56,22 @@
             @enderror
         </div>
 
-        <?php #buttons ?>
+        <!-- checkboxes -->
         <div>
+            @foreach($technologies as $technology)
+            <input type="checkbox" value="{{$technology->id}}" id="tag-{{$technology->label}}" name="technologies[]"
+             @if(in_array($technology->id, old('technologies', $project_technologies ?? []))) checked @endif>
+            <label class="me-2" for="tag-{{$technology->label}}">
+                {{$technology->label}}
+            </label>
+            @endforeach
+            @error('technologies')
+            <div class="text-danger">{{$message}}</div>
+            @enderror
+        </div>
+
+        <?php #buttons ?>
+        <div class="mt-5">
             <button type="submit" class="btn btn-outline-primary"><i class="fa-solid fa-upload me-2"></i>{{ $project->exists ? 'Update' : 'Upload'}}</button>
         <div>
     </form>
