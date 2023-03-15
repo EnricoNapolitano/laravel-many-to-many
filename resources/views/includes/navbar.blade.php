@@ -10,7 +10,10 @@
         </li>
         <li class="nav-item">
           <a class="nav-link @if (Route::is('admin.projects.index')) text-primary active @endif" href="{{ route('admin.projects.index') }}">Projects</a>
-        </li>                      
+        </li>
+        <li class="nav-item">
+          <a class="nav-link @if (Route::is('admin.technologies.index')) text-primary active @endif" href="{{ route('admin.technologies.index') }}">Technologies</a>
+        </li>                       
       </ul>
     </div>
 
