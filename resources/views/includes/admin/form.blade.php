@@ -82,6 +82,5 @@
         <button id="btn-delete" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to delete this project?')"><i class="fa-solid fa-trash-can"></i></button>
     </form>
     @endif
-    </form>
 
 </main>

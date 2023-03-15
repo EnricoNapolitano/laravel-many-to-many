@@ -32,6 +32,14 @@
         </div>
     </div>
 
-    <button type="submit" class="btn btn-outline-primary">Send</button>
+    <button type="submit" class="btn btn-outline-primary"><i class="fa-solid fa-upload me-2"></i>{{ $technology->exists ? 'Update' : 'Upload'}}</button>
 
 </form>
+
+@if(Route::is('admin.technologies.edit'))
+<form action="{{route('admin.technologies.destroy', $technology->id)}}" method="POST" id="btn-delete">
+    @csrf
+    @method('DELETE')
+    <button class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to delete this technology?')"><i class="fa-solid fa-trash-can"></i></button>
+</form>
+@endif
