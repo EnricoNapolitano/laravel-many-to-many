@@ -2,13 +2,13 @@
 
     @include('includes.alerts.error')
 
-    <!-- form edit -->
     @if($project->exists)
+    <!-- form edit -->
     <form action="{{ route('admin.projects.update', $project->id) }}" method="POST" enctype="multipart/form-data" novalidate>
     @method('PUT')
     
-    <!-- form upload -->
     @else
+    <!-- form upload -->
     <form action="{{ route('admin.projects.store') }}" method="POST" enctype="multipart/form-data" novalidate>
     @endif
     @csrf
