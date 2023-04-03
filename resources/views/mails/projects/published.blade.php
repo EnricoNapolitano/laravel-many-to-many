@@ -1,0 +1,1 @@
+<h1>A new project has been created!</h1>

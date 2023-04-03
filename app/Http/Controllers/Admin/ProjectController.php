@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Mail\ProjectPublicationMail;
 use App\Models\Project;
 use App\Models\Type;
 use App\Models\Technology;
